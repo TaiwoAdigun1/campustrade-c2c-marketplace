@@ -1,0 +1,2 @@
+<?php include 'includes/header.php'; ?>
+<section class="container py-5"><h1 class="section-title">Help and Contact</h1><p>Contact the CampusTrade support team for account, order or product listing assistance.</p><div class="table-card"><p><strong>Email:</strong> support@campustrade.co.za</p><p><strong>Office hours:</strong> Monday to Friday, 08:00 to 16:00</p></div></section><?php include 'includes/footer.php'; ?>

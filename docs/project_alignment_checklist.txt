@@ -1,0 +1,11 @@
+CampusTrade Project Alignment Checklist
+
+Required model: Consumer-to-Consumer e-commerce system - included.
+Customer can buy goods - products, cart, checkout and orders pages included.
+Customer/seller can sell goods - sell-product and seller-dashboard pages included.
+Admin site - admin folder included.
+RBAC - Admin, Seller and Customer roles included in schema and admin role screen.
+Languages - PHP, HTML, CSS, JavaScript and MySQL included.
+Bootstrap - used for responsive layout.
+CMS branding - removed. No WordPress/Wix branding included.
+Hosting ready - upload the same folder to PHP/MySQL hosting after local testing.
