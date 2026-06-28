@@ -1,4 +1,44 @@
-<?php include '../includes/db.php'; include '../includes/auth.php'; require_role('Admin'); include '../includes/header.php'; ?>
+<?php require_once '../includes/header.php'; ?>
 
-<?php if(isset($_POST['update'])){ $id=(int)$_POST['order_id']; $status=mysqli_real_escape_string($conn,$_POST['order_status']); mysqli_query($conn,"UPDATE orders SET order_status='$status' WHERE order_id=$id"); } $orders=mysqli_query($conn,"SELECT o.*, u.full_name FROM orders o JOIN users u ON o.customer_id=u.user_id ORDER BY o.created_at DESC"); ?>
-<section class="container py-5"><h1>Manage Orders</h1><div class="table-card"><table class="table"><thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Update</th></tr></thead><tbody><?php while($o=mysqli_fetch_assoc($orders)): ?><tr><td>#<?php echo $o['order_id']; ?></td><td><?php echo htmlspecialchars($o['full_name']); ?></td><td>R<?php echo number_format($o['total_amount'],2); ?></td><td><?php echo htmlspecialchars($o['order_status']); ?></td><td><form method="post" class="d-flex gap-2"><input type="hidden" name="order_id" value="<?php echo $o['order_id']; ?>"><select class="form-select" name="order_status"><option>Placed</option><option>Processing</option><option>Completed</option><option>Cancelled</option></select><button class="btn btn-sm btn-primary" name="update">Save</button></form></td></tr><?php endwhile; ?></tbody></table></div></section><?php include '../includes/footer.php'; ?>
+<section class="container py-5">
+    <h1 class="section-title mb-4">Manage Orders</h1>
+
+    <div class="card p-4 shadow-sm">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>1001</td>
+                    <td>Customer User</td>
+                    <td>Dell Latitude Laptop</td>
+                    <td>R4,500.00</td>
+                    <td>Pending</td>
+                    <td><button class="btn btn-sm btn-outline-primary">View</button></td>
+                </tr>
+
+                <tr>
+                    <td>1002</td>
+                    <td>Customer User</td>
+                    <td>Accounting Textbook</td>
+                    <td>R350.00</td>
+                    <td>Completed</td>
+                    <td><button class="btn btn-sm btn-outline-primary">View</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</section>
+
+<?php require_once '../includes/footer.php'; ?>
