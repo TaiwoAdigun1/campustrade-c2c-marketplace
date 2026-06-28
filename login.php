@@ -1,6 +1,9 @@
 <?php
-session_start();
-require_once 'includes/db.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once 'includes/header.php';
 
 $error = '';
 
@@ -8,76 +11,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $sql = "SELECT users.*, roles.role_name 
-            FROM users 
-            INNER JOIN roles ON users.role_id = roles.role_id 
-            WHERE users.email = ? 
-            LIMIT 1";
+    $accounts = [
+        'admin@campustrade.co.za' => [
+            'password' => 'Admin123!',
+            'name' => 'Admin User',
+            'role' => 'Admin',
+            'redirect' => '/admin/dashboard.php'
+        ],
+        'seller@campustrade.co.za' => [
+            'password' => 'Admin123!',
+            'name' => 'Seller User',
+            'role' => 'Seller',
+            'redirect' => '/seller-dashboard.php'
+        ],
+        'customer@campustrade.co.za' => [
+            'password' => 'Admin123!',
+            'name' => 'Customer User',
+            'role' => 'Customer',
+            'redirect' => '/index.php'
+        ]
+    ];
 
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $email);
-    mysqli_stmt_execute($stmt);
+    if (isset($accounts[$email]) && $password === $accounts[$email]['password']) {
+        $_SESSION['user_id'] = 1;
+        $_SESSION['full_name'] = $accounts[$email]['name'];
+        $_SESSION['role_name'] = $accounts[$email]['role'];
+        $_SESSION['email'] = $email;
 
-    $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
-
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['full_name'] = $user['full_name'];
-        $_SESSION['email'] = $user['email'];
-        $_SESSION['role'] = $user['role_name'];
-
-        if ($user['role_name'] === 'Admin') {
-            header("Location: admin/index.php");
-            exit;
-        } elseif ($user['role_name'] === 'Seller') {
-            header("Location: seller-dashboard.php");
-            exit;
-        } else {
-            header("Location: index.php");
-            exit;
-        }
+        header("Location: " . $accounts[$email]['redirect']);
+        exit;
     } else {
-        $error = "Invalid login details.";
+        $error = "Invalid login details. Please try again.";
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login - CampusTrade</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+<section class="container py-5">
+    <div class="form-shell">
+        <h1 class="mb-3">Login</h1>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow-sm p-4">
-                <h1 class="mb-3">Login</h1>
-
-                <?php if ($error): ?>
-                    <div class="alert alert-danger">
-                        <?php echo $error; ?>
-                    </div>
-                <?php endif; ?>
-
-                <form method="POST">
-                    <input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
-                    <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
-
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
-                </form>
-
-                <p class="small mt-3">
-                    Demo admin: admin@campustrade.co.za / Admin123!
-                </p>
+        <?php if ($error): ?>
+            <div class="alert alert-danger">
+                <?php echo $error; ?>
             </div>
+        <?php endif; ?>
+
+        <form method="POST" action="/login.php">
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input 
+                    type="email" 
+                    name="email" 
+                    class="form-control" 
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-control" 
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Login
+            </button>
+        </form>
+
+        <div class="mt-4 small text-muted">
+            <strong>Demo Login Details</strong><br>
+            Admin: admin@campustrade.co.za / Admin123!<br>
+            Seller: seller@campustrade.co.za / Admin123!<br>
+            Customer: customer@campustrade.co.za / Admin123!
         </div>
     </div>
-</div>
+</section>
 
-</body>
-</html>
+<?php require_once 'includes/footer.php'; ?>
