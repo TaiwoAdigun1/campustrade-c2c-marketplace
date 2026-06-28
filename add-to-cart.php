@@ -1,8 +1,46 @@
-<?php include 'includes/db.php'; include 'includes/auth.php'; require_login();
-$product_id=(int)($_GET['id'] ?? 0); $customer_id=(int)$_SESSION['user_id'];
-$cart=mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM cart WHERE customer_id=$customer_id LIMIT 1"));
-if(!$cart){ mysqli_query($conn,"INSERT INTO cart(customer_id) VALUES($customer_id)"); $cart_id=mysqli_insert_id($conn); } else { $cart_id=$cart['cart_id']; }
-$existing=mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM cart_items WHERE cart_id=$cart_id AND product_id=$product_id"));
-if($existing){ mysqli_query($conn,"UPDATE cart_items SET quantity=quantity+1 WHERE cart_item_id=".(int)$existing['cart_item_id']); } else { mysqli_query($conn,"INSERT INTO cart_items(cart_id,product_id,quantity) VALUES($cart_id,$product_id,1)"); }
-header('Location: cart.php'); exit;
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$products = [
+    1 => ['name' => 'Dell Latitude Laptop', 'price' => 4500, 'image' => 'laptop.jpg'],
+    2 => ['name' => 'iPhone 11 64GB', 'price' => 5200, 'image' => 'iphone.jpg'],
+    3 => ['name' => 'Accounting Textbook', 'price' => 350, 'image' => 'textbook.jpg'],
+    4 => ['name' => 'Nike Sneakers', 'price' => 800, 'image' => 'sneakers.jpg'],
+    5 => ['name' => 'Study Desk', 'price' => 1200, 'image' => 'desk.jpg'],
+    6 => ['name' => 'Bluetooth Speaker', 'price' => 450, 'image' => 'speaker.jpg'],
+    7 => ['name' => 'Scientific Calculator', 'price' => 300, 'image' => 'calculator.jpg'],
+    8 => ['name' => 'Backpack', 'price' => 250, 'image' => 'backpack.jpg'],
+    9 => ['name' => 'Microwave Oven', 'price' => 900, 'image' => 'microwave.jpg'],
+    10 => ['name' => 'Office Chair', 'price' => 750, 'image' => 'chair.jpg'],
+    11 => ['name' => 'Hair Dryer', 'price' => 400, 'image' => 'hairdryer.jpg'],
+    12 => ['name' => 'Graphic Design Tablet', 'price' => 1600, 'image' => 'tablet.jpg'],
+    13 => ['name' => 'Medical Terminology Book', 'price' => 500, 'image' => 'medical-book.jpg'],
+    14 => ['name' => 'Soccer Boots', 'price' => 650, 'image' => 'boots.jpg'],
+    15 => ['name' => 'Ring Light', 'price' => 550, 'image' => 'ringlight.jpg']
+];
+
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($id > 0 && isset($products[$id])) {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+
+    if (isset($_SESSION['cart'][$id])) {
+        $_SESSION['cart'][$id]['quantity']++;
+    } else {
+        $_SESSION['cart'][$id] = [
+            'id' => $id,
+            'name' => $products[$id]['name'],
+            'price' => $products[$id]['price'],
+            'image' => $products[$id]['image'],
+            'quantity' => 1
+        ];
+    }
+}
+
+header("Location: /cart.php");
+exit;
 ?>
