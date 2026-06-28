@@ -1,4 +1,65 @@
-<?php include '../includes/db.php'; include '../includes/auth.php'; require_role('Admin'); include '../includes/header.php'; ?>
+<?php require_once '../includes/header.php'; ?>
 
-<?php if(isset($_GET['approve'])){ $id=(int)$_GET['approve']; mysqli_query($conn,"UPDATE products SET status='Approved' WHERE product_id=$id"); } if(isset($_GET['remove'])){ $id=(int)$_GET['remove']; mysqli_query($conn,"UPDATE products SET status='Removed' WHERE product_id=$id"); } $products=mysqli_query($conn,"SELECT p.*, c.category_name, u.full_name FROM products p JOIN categories c ON p.category_id=c.category_id JOIN users u ON p.seller_id=u.user_id ORDER BY p.created_at DESC"); ?>
-<section class="container py-5"><h1>Manage Products</h1><div class="table-card"><table class="table"><thead><tr><th>Product</th><th>Seller</th><th>Category</th><th>Status</th><th>Action</th></tr></thead><tbody><?php while($p=mysqli_fetch_assoc($products)): ?><tr><td><?php echo htmlspecialchars($p['product_name']); ?></td><td><?php echo htmlspecialchars($p['full_name']); ?></td><td><?php echo htmlspecialchars($p['category_name']); ?></td><td><?php echo htmlspecialchars($p['status']); ?></td><td><a class="btn btn-sm btn-success" href="?approve=<?php echo $p['product_id']; ?>">Approve</a> <a class="btn btn-sm btn-danger" href="?remove=<?php echo $p['product_id']; ?>">Remove</a></td></tr><?php endwhile; ?></tbody></table></div></section><?php include '../includes/footer.php'; ?>
+<section class="container py-5">
+    <h1 class="section-title mb-4">Manage Products</h1>
+
+    <div class="card p-4 shadow-sm">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Seller</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Dell Latitude Laptop</td>
+                    <td>Thabo Mokoena</td>
+                    <td>Electronics</td>
+                    <td>R4,500.00</td>
+                    <td>Approved</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">Approve</button>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Accounting Textbook</td>
+                    <td>Lerato Phiri</td>
+                    <td>Books</td>
+                    <td>R350.00</td>
+                    <td>Approved</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">Approve</button>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Nike Sneakers</td>
+                    <td>Jason N.</td>
+                    <td>Fashion</td>
+                    <td>R800.00</td>
+                    <td>Pending</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">Approve</button>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</section>
+
+<?php require_once '../includes/footer.php'; ?>
