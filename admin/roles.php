@@ -1,4 +1,41 @@
-<?php include '../includes/db.php'; include '../includes/auth.php'; require_role('Admin'); include '../includes/header.php'; ?>
+<?php require_once '../includes/header.php'; ?>
 
-<?php if(isset($_POST['add'])){ $name=mysqli_real_escape_string($conn,$_POST['role_name']); mysqli_query($conn,"INSERT INTO roles(role_name) VALUES('$name')"); } $roles=mysqli_query($conn,"SELECT * FROM roles"); ?>
-<section class="container py-5"><h1>Manage Roles</h1><div class="row g-4"><div class="col-md-5"><div class="table-card"><form method="post"><input class="form-control mb-2" name="role_name" placeholder="Role name"><button class="btn btn-primary" name="add">Add Role</button></form></div></div><div class="col-md-7"><div class="table-card"><table class="table"><tr><th>ID</th><th>Role</th></tr><?php while($r=mysqli_fetch_assoc($roles)): ?><tr><td><?php echo $r['role_id']; ?></td><td><?php echo htmlspecialchars($r['role_name']); ?></td></tr><?php endwhile; ?></table></div></div></div></section><?php include '../includes/footer.php'; ?>
+<section class="container py-5">
+    <h1 class="section-title mb-4">Manage Roles</h1>
+
+    <div class="card p-4 shadow-sm">
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Permissions</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Admin</td>
+                    <td>Manage users, roles, products, categories and orders.</td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+
+                <tr>
+                    <td>Seller</td>
+                    <td>Add products, manage listings and view sales.</td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+
+                <tr>
+                    <td>Customer</td>
+                    <td>Browse products, add to cart, checkout and view orders.</td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</section>
+
+<?php require_once '../includes/footer.php'; ?>
